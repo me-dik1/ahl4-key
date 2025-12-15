@@ -1,0 +1,76 @@
+<!DOCTYPE html>
+<html lang="zh-TW">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>鎖匙扣管理App</title>
+    <link href="https://cdn.jsdelivr.net/npm/bootstrap@5.3.0/dist/css/bootstrap.min.css" rel="stylesheet">
+    <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
+    <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
+    <style>
+        body { font-family: 'Noto Sans TC', sans-serif; background: linear-gradient(to right, #f8f9fa, #e9ecef); }
+        .card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
+        .btn-custom { background-color: #007bff; color: white; }
+        .btn-custom:hover { background-color: #0056b3; }
+    </style>
+    <!-- Firebase SDK -->
+    <!-- Firebase Compat SDK (非模組版) -->
+	<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
+	<script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-firestore-compat.js"></script>
+</head>
+<body>
+    <div class="container mt-5">
+        <!-- 登入區 -->
+        <div id="login-section" class="card p-4">
+            <h2 class="text-center">登入以同步資料</h2>
+            <input type="email" id="email" class="form-control mb-2" placeholder="Email">
+            <input type="password" id="password" class="form-control mb-2" placeholder="密碼" onkeydown="if(event.key==='Enter') login()">
+            <button class="btn btn-custom w-100" onclick="login()">登入</button>
+            <button class="btn btn-secondary w-100 mt-2" onclick="register()">註冊</button>
+        </div>
+
+        <!-- 導航 (隱藏直到登入) -->
+        <ul class="nav nav-pills mb-3" id="nav" style="display:none;">
+            <li class="nav-item"><a class="nav-link btn-custom" href="#archive">檔案庫</a></li>
+            <li class="nav-item"><a class="nav-link btn-custom" href="#draw">抽籤</a></li>
+        </ul>
+
+        <!-- 檔案庫頁 -->
+        <div id="archive" class="card p-4" style="display:none;">
+            <h2>鎖匙扣檔案庫</h2>
+            <input type="text" id="new-keychain" class="form-control mb-2" placeholder="新增鎖匙扣名稱" onkeydown="if(event.key==='Enter') addKeychain()">
+            <button class="btn btn-custom" onclick="addKeychain()">新增</button>
+            <button class="btn btn-custom" onclick="shuffleOrder()">隨機排序</button>
+            <ul id="keychain-list" class="list-group mt-3"></ul>
+        </div>
+
+        <!-- 抽籤頁 -->
+        <div id="draw" class="card p-4" style="display:none;">
+            <h2>抽籤</h2>
+            <button class="btn btn-custom" onclick="drawKeychain()">抽一隻</button>
+            <button class="btn btn-warning" onclick="resetDraw()">重置抽籤記錄</button>
+            <div id="result" class="mt-3 alert alert-info"></div>
+            <h3>統計與歷史</h3>
+            <ul id="stats-list" class="list-group"></ul>
+        </div>
+    </div>
+    <script src="app.js"></script>
+    <!-- Firebase Config -->
+    <script>
+          const firebaseConfig = {
+    apiKey: "AIzaSyA2iBUs4yLgHTpk-woUrUXboug_N-3YL7M",
+    authDomain: "ahl4-key.firebaseapp.com",
+    projectId: "ahl4-key",
+    storageBucket: "ahl4-key.firebasestorage.app",
+    messagingSenderId: "666533647782",
+    appId: "1:666533647782:web:d26cd0dc4b03ac8733ab67",
+    measurementId: "G-VG3HWXTDJ4"
+  };
+
+        firebase.initializeApp(firebaseConfig);
+        const auth = firebase.auth();
+        const db = firebase.firestore();
+    </script>
+</body>
+</html>
