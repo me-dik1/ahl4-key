@@ -260,13 +260,5 @@ document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// 返回主頁
-function backToHome() {
-    location.hash = '';
-    document.getElementById('nav').style.display = 'flex';
-    document.getElementById('draw').style.display = 'none';
-    document.getElementById('archive').style.display = 'none';
-}
-
 // 初始載入
 loadData();
