@@ -33,7 +33,7 @@ function login() {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav').style.display = 'flex';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = ''; // 加這行：重置 hash，初始顯示主頁導航
+        location.hash = ''; // 重置 hash，初始顯示主頁導航
         loadData();
     }).catch(error => alert('登入錯誤: ' + error.message));
 }
@@ -46,6 +46,20 @@ function register() {
     auth.createUserWithEmailAndPassword(email, password).then(cred => {
         alert('註冊成功，請登入');
     }).catch(error => alert('註冊錯誤: ' + error.message));
+}
+
+// 登出
+function logout() {
+    auth.signOut().then(() => {
+        user = null;
+        document.getElementById('login-section').style.display = 'block';
+        document.getElementById('nav').style.display = 'none';
+        document.getElementById('draw').style.display = 'none';
+        document.getElementById('archive').style.display = 'none';
+        document.getElementById('back-to-top').style.display = 'none';
+        localStorage.clear(); // 可選：清除本地資料
+        alert('已登出');
+    }).catch(error => alert('登出錯誤: ' + error.message));
 }
 
 // 新增鎖匙扣
@@ -223,7 +237,7 @@ auth.onAuthStateChanged(u => {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav').style.display = 'flex';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = ''; // 初始顯示主頁導航
+        location.hash = ''; // 重置 hash，初始顯示主頁導航
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
