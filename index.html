@@ -29,7 +29,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <!-- 登入區 -->
+        <!-- 登入區 (無任何分頁按鈕) -->
         <div id="login-section" class="card p-4">
             <h2 class="text-center">登入以同步資料</h2>
             <input type="email" id="email" class="form-control mb-2" placeholder="Email">
@@ -38,7 +38,7 @@
             <button class="btn btn-secondary w-100 mt-2" onclick="register()">註冊</button>
         </div>
 
-        <!-- 主頁導航 (只放大按鈕：抽籤、檔案庫、登出) -->
+        <!-- 主頁導航 (只放分頁大按鈕及登出) -->
         <div id="nav" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
             <ul class="nav nav-pills flex-row">
                 <li class="nav-item m-2">
@@ -55,7 +55,7 @@
 
         <!-- 抽籤頁 -->
         <div id="draw" class="card p-4" style="display:none;">
-            <!-- 小導航條：抽籤(活躍)、檔案庫、返回主頁、登出 -->
+            <!-- 最上方小導航條：只放分頁小按鈕及返回主頁 (無主頁/登入) -->
             <ul class="nav nav-pills flex-row mb-3">
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm active" href="#draw">抽籤</a>
@@ -63,11 +63,8 @@
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm" href="#archive">檔案庫</a>
                 </li>
-                <li class="nav-item me-2">
-                    <button class="nav-link btn-secondary btn-sm" onclick="backToHome()">返回主頁</button>
-                </li>
                 <li class="nav-item">
-                    <button class="nav-link btn-danger btn-sm" onclick="logout()">登出</button>
+                    <button class="nav-link btn-secondary btn-sm" onclick="backToHome()">返回主頁</button>
                 </li>
             </ul>
             <h2>抽籤</h2>
@@ -88,7 +85,7 @@
 
         <!-- 檔案庫頁 -->
         <div id="archive" class="card p-4" style="display:none;">
-            <!-- 小導航條：抽籤、檔案庫(活躍)、返回主頁、登出 -->
+            <!-- 最上方小導航條：只放分頁小按鈕及返回主頁 (無主頁/登入) -->
             <ul class="nav nav-pills flex-row mb-3">
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm" href="#draw">抽籤</a>
@@ -96,11 +93,8 @@
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm active" href="#archive">檔案庫</a>
                 </li>
-                <li class="nav-item me-2">
-                    <button class="nav-link btn-secondary btn-sm" onclick="backToHome()">返回主頁</button>
-                </li>
                 <li class="nav-item">
-                    <button class="nav-link btn-danger btn-sm" onclick="logout()">登出</button>
+                    <button class="nav-link btn-secondary btn-sm" onclick="backToHome()">返回主頁</button>
                 </li>
             </ul>
             <h2>鎖匙扣檔案庫</h2>
