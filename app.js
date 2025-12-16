@@ -4,17 +4,13 @@ let user = null;
 // 載入資料
 function loadData() {
     if (user) {
-        // 從Firestore載入
         db.collection('keychains').doc(user.uid).get().then(doc => {
             if (doc.exists) keychains = doc.data().list || [];
-            renderArchive();
-            renderStats();
+            renderAll();
         }).catch(error => console.error('載入錯誤:', error));
     } else {
-        // 本地載入
         keychains = JSON.parse(localStorage.getItem('keychains')) || [];
-        renderArchive();
-        renderStats();
+        renderAll();
     }
 }
 
@@ -32,15 +28,14 @@ function login() {
     const email = document.getElementById('email').value;
     const password = document.getElementById('password').value;
     if (!email || !password) return alert('請輸入 email 和密碼');
-    auth.signInWithEmailAndPassword(email, password).catch(() => {
-        return auth.createUserWithEmailAndPassword(email, password);
-    }).then(cred => {
+    auth.signInWithEmailAndPassword(email, password).then(cred => {
         user = cred.user;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav').style.display = 'flex';
         loadData();
     }).catch(error => alert('登入錯誤: ' + error.message));
 }
+
 // 註冊
 function register() {
     const email = document.getElementById('email').value;
@@ -57,12 +52,32 @@ function addKeychain() {
     if (name) {
         keychains.push({ id: Date.now(), name, drawnCount: 0, usedCount: 0, status: '未用', history: [] });
         saveData();
-        renderArchive();
+        renderAll();
         document.getElementById('new-keychain').value = '';
     }
 }
 
-// 渲染檔案庫
+// 渲染所有（呼叫各渲染函數）
+function renderAll() {
+    renderSimpleList();
+    renderArchive();
+    renderStats();
+}
+
+// 渲染抽籤頁簡單列表
+function renderSimpleList() {
+    const list = document.getElementById('simple-list');
+    list.innerHTML = '';
+    keychains.forEach((kc, index) => {
+        const li = document.createElement('li');
+        li.className = 'list-group-item';
+        li.innerHTML = `${index + 1}. ${kc.name}`;
+        list.appendChild(li);
+    });
+    document.getElementById('draw').style.display = 'block';
+}
+
+// 渲染檔案庫列表
 function renderArchive() {
     const list = document.getElementById('keychain-list');
     list.innerHTML = '';
@@ -76,6 +91,7 @@ function renderArchive() {
                 <button class="btn btn-sm btn-success" onclick="setStatus(${kc.id}, '使用中')"><i class="fas fa-play"></i> 使用中</button>
                 <button class="btn btn-sm btn-secondary" onclick="setStatus(${kc.id}, '用完')"><i class="fas fa-stop"></i> 用完</button>
                 <button class="btn btn-sm btn-info" onclick="markUsed(${kc.id})"><i class="fas fa-check"></i> 標記使用過</button>
+                <button class="btn btn-sm btn-warning" onclick="resetItemStats(${kc.id})"><i class="fas fa-undo"></i> 重置統計</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteKeychain(${kc.id})"><i class="fas fa-trash"></i></button>
             </div>
         `;
@@ -91,7 +107,7 @@ function editKeychain(id) {
     if (newName && newName.trim()) {
         kc.name = newName.trim();
         saveData();
-        renderArchive();
+        renderAll();
     }
 }
 
@@ -100,7 +116,7 @@ function deleteKeychain(id) {
     if (confirm('確認刪除？')) {
         keychains = keychains.filter(k => k.id !== id);
         saveData();
-        renderArchive();
+        renderAll();
     }
 }
 
@@ -118,15 +134,14 @@ function markUsed(id) {
     kc.usedCount++;
     kc.history.push({ type: '使用', date: new Date().toLocaleString('zh-TW') });
     saveData();
-    renderArchive();
-    renderStats();
+    renderAll();
 }
 
 // 隨機排序
 function shuffleOrder() {
     keychains = keychains.sort(() => Math.random() - 0.5);
     saveData();
-    renderArchive();
+    renderAll();
 }
 
 // 抽籤
@@ -138,18 +153,42 @@ function drawKeychain() {
     random.history.push({ type: '抽中', date: new Date().toLocaleString('zh-TW') });
     document.getElementById('result').innerText = `抽中：${random.name}`;
     saveData();
-    renderStats();
+    renderAll();
 }
 
-// 重置抽籤
+// 重置單一鎖匙扣統計
+function resetItemStats(id) {
+    if (confirm('確認重置此鎖匙扣的統計？')) {
+        const kc = keychains.find(k => k.id === id);
+        kc.drawnCount = 0;
+        kc.usedCount = 0;
+        kc.history = [];
+        saveData();
+        renderAll();
+    }
+}
+
+// 重置所有抽籤記錄
 function resetDraw() {
-    if (confirm('確認重置抽籤記錄？')) {
+    if (confirm('確認重置所有抽籤記錄？')) {
         keychains.forEach(kc => {
             kc.drawnCount = 0;
             kc.history = kc.history.filter(h => h.type !== '抽中');
         });
         saveData();
-        renderStats();
+        renderAll();
+    }
+}
+
+// 重置所有使用記錄
+function resetAllUsed() {
+    if (confirm('確認重置所有使用記錄？')) {
+        keychains.forEach(kc => {
+            kc.usedCount = 0;
+            kc.history = kc.history.filter(h => h.type !== '使用');
+        });
+        saveData();
+        renderAll();
     }
 }
 
@@ -157,16 +196,27 @@ function resetDraw() {
 function renderStats() {
     const list = document.getElementById('stats-list');
     list.innerHTML = '';
+    let totalDrawn = 0;
+    let totalUsed = 0;
     keychains.forEach(kc => {
+        totalDrawn += kc.drawnCount;
+        totalUsed += kc.usedCount;
         const li = document.createElement('li');
-        li.className = 'list-group-item';
+        li.className = 'list-group-item d-flex justify-content-between align-items-center';
         li.innerHTML = `
-            ${kc.name}: 抽中 ${kc.drawnCount} 次，使用 ${kc.usedCount} 次<br>
-            歷史: ${kc.history.map(h => `${h.type} - ${h.date}`).join('<br>') || '無記錄'}
+            ${kc.name}: 抽中 ${kc.drawnCount} 次，使用 ${kc.usedCount} 次
+            <button class="btn btn-sm btn-warning" onclick="resetItemStats(${kc.id})"><i class="fas fa-undo"></i> 重置</button>
+            <br>歷史: ${kc.history.map(h => `${h.type} - ${h.date}`).join('<br>') || '無記錄'}
         `;
         list.appendChild(li);
     });
-    document.getElementById('draw').style.display = 'block';
+
+    // 總統計
+    const totalDiv = document.getElementById('total-stats');
+    totalDiv.innerHTML = `
+        總抽中: ${totalDrawn} 次 <button class="btn btn-sm btn-warning" onclick="resetDraw()"><i class="fas fa-undo"></i> 重置總抽中</button><br>
+        總使用: ${totalUsed} 次 <button class="btn btn-sm btn-warning" onclick="resetAllUsed()"><i class="fas fa-undo"></i> 重置總使用</button>
+    `;
 }
 
 // 初始化
@@ -179,13 +229,13 @@ auth.onAuthStateChanged(u => {
     }
 });
 
-// 導航切換 (使用 hash)
+// 導航切換
 window.addEventListener('hashchange', () => {
-    document.getElementById('archive').style.display = 'none';
     document.getElementById('draw').style.display = 'none';
-    if (location.hash === '#archive') document.getElementById('archive').style.display = 'block';
+    document.getElementById('archive').style.display = 'none';
     if (location.hash === '#draw') document.getElementById('draw').style.display = 'block';
+    if (location.hash === '#archive') document.getElementById('archive').style.display = 'block';
 });
 
-// 初始載入（如果已登入）
+// 初始載入
 loadData();
