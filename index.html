@@ -20,7 +20,7 @@
     .btn-custom { background-color: #007bff; color: white; }
     .btn-custom:hover { background-color: #0056b3; }
     #back-to-top { position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; }
-    #nav .nav-link { border-radius: 20px; } /* 圓角按鈕 */
+    #home .nav-link { border-radius: 20px; } /* 圓角按鈕 */
 </style>
     <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
@@ -29,7 +29,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <!-- 登入區 (無任何分頁按鈕) -->
+        <!-- 登入區 (無任何分頁或登出按鈕) -->
         <div id="login-section" class="card p-4">
             <h2 class="text-center">登入以同步資料</h2>
             <input type="email" id="email" class="form-control mb-2" placeholder="Email">
@@ -38,8 +38,8 @@
             <button class="btn btn-secondary w-100 mt-2" onclick="register()">註冊</button>
         </div>
 
-        <!-- 主頁導航 (只放分頁大按鈕及登出) -->
-        <div id="nav" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
+        <!-- 主頁導航 (只放分頁大按鈕及登出大按鈕) -->
+        <div id="home" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
             <ul class="nav nav-pills flex-row">
                 <li class="nav-item m-2">
                     <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#draw">抽籤</a>
@@ -48,17 +48,17 @@
                     <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#archive">檔案庫</a>
                 </li>
                 <li class="nav-item m-2">
-                    <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#login-section">登出</a>
+                    <button class="nav-link btn-custom btn-lg px-5 py-4 fs-1" onclick="logout()">登出</button>
                 </li>
             </ul>
         </div>
 
         <!-- 抽籤頁 -->
-        <div id="draw" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
-            <!-- 最上方小導航條：只放分頁小按鈕及返回主頁 (無主頁/登入) -->
+        <div id="draw" class="card p-4" style="display:none;">
+            <!-- 最上方小導航條：分頁小按鈕及返回主頁 (同款 btn-custom btn-sm) -->
             <ul class="nav nav-pills flex-row mb-3">
                 <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm" href="#nav">主頁</a>
+                    <a class="nav-link btn-custom btn-sm" href="#home">主頁</a>
                 </li>
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm active" href="#draw">抽籤</a>
@@ -85,10 +85,10 @@
 
         <!-- 檔案庫頁 -->
         <div id="archive" class="card p-4" style="display:none;">
-            <!-- 最上方小導航條：只放分頁小按鈕及返回主頁 (無主頁/登入) -->
+            <!-- 最上方小導航條：分頁小按鈕及返回主頁 (同款 btn-custom btn-sm) -->
             <ul class="nav nav-pills flex-row mb-3">
                 <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm" href="#nav">主頁</a>
+                    <a class="nav-link btn-custom btn-sm" href="#home">主頁</a>
                 </li>
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm" href="#draw">抽籤</a>

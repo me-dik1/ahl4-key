@@ -31,9 +31,8 @@ function login() {
     auth.signInWithEmailAndPassword(email, password).then(cred => {
         user = cred.user;
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('nav').style.display = 'flex';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = ''; // 重置 hash，初始顯示主頁導航
+        location.hash = '#home'; // 初始顯示主頁
         loadData();
     }).catch(error => alert('登入錯誤: ' + error.message));
 }
@@ -53,7 +52,7 @@ function logout() {
     auth.signOut().then(() => {
         user = null;
         document.getElementById('login-section').style.display = 'block';
-        document.getElementById('nav').style.display = 'none';
+        document.getElementById('home').style.display = 'none';
         document.getElementById('draw').style.display = 'none';
         document.getElementById('archive').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'none';
@@ -237,9 +236,8 @@ auth.onAuthStateChanged(u => {
     if (u) {
         user = u;
         document.getElementById('login-section').style.display = 'none';
-        document.getElementById('nav').style.display = 'flex';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = ''; // 重置 hash，初始顯示主頁導航
+        location.hash = '#home'; // 重置 hash，初始顯示主頁導航
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
@@ -248,9 +246,12 @@ auth.onAuthStateChanged(u => {
 
 // 導航切換
 window.addEventListener('hashchange', () => {
-    document.getElementById('nav').style.display = 'none'; // 切頁時隱藏主頁導航
+    document.getElementById('home').style.display = 'none'; // 切頁時隱藏主頁導航
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
+    if (location.hash === '#home' || location.hash === '') {
+        document.getElementById('home').style.display = 'flex';
+    }
     if (location.hash === '#draw') document.getElementById('draw').style.display = 'block';
     if (location.hash === '#archive') document.getElementById('archive').style.display = 'block';
 });
