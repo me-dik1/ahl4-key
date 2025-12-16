@@ -8,12 +8,19 @@
     <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+TC&display=swap" rel="stylesheet">
     <link href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.0.0/css/all.min.css" rel="stylesheet">
     <style>
-        body { font-family: 'Noto Sans TC', sans-serif; background: linear-gradient(to right, #f8f9fa, #e9ecef); }
-        .card { box-shadow: 0 4px 8px rgba(0,0,0,0.1); }
-        .btn-custom { background-color: #007bff; color: white; }
-        .btn-custom:hover { background-color: #0056b3; }
-        #back-to-top { position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; }
-    </style>
+    body { 
+        font-family: 'Noto Sans TC', sans-serif; 
+        background: url('https://media.karousell.com/media/photos/products/2020/12/15/________1608049137_0ca655bc_progressive.jpg') no-repeat center center fixed; 
+        background-size: cover; /* 讓圖片滿版 */
+    }
+    .card { 
+        box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
+        background-color: rgba(255, 255, 255, 0.8); /* 半透明卡片，避免背景太亂 */
+    }
+    .btn-custom { background-color: #007bff; color: white; }
+    .btn-custom:hover { background-color: #0056b3; }
+    #back-to-top { position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; }
+</style>
     <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
     <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-auth-compat.js"></script>
@@ -39,6 +46,7 @@
         <!-- 抽籤頁 -->
         <div id="draw" class="card p-4" style="display:none;">
             <h2>抽籤</h2>
+ 	    <p class="text-center text-muted">歡迎使用鎖匙扣抽籤工具！新增您的鎖匙扣並開始抽取吧。</p>
             <div class="mb-3">
                 <input type="text" id="new-keychain" class="form-control d-inline-block w-50" placeholder="新增鎖匙扣名稱" onkeydown="if(event.key==='Enter') addKeychain()">
                 <button class="btn btn-custom ms-2" onclick="addKeychain()">新增</button>
@@ -56,6 +64,7 @@
         <!-- 檔案庫頁 -->
         <div id="archive" class="card p-4" style="display:none;">
             <h2>鎖匙扣檔案庫</h2>
+            <p class="text-center text-muted">這裡管理您的所有鎖匙扣，編輯狀態和查看統計。</p>
             <ul id="keychain-list" class="list-group mt-3"></ul>
             <h3>統計與歷史</h3>
             <div id="total-stats" class="mt-3 alert alert-secondary"></div>
