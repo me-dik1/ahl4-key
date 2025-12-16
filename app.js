@@ -33,6 +33,7 @@ function login() {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav').style.display = 'flex';
         document.getElementById('back-to-top').style.display = 'block';
+        location.hash = ''; // 加這行：重置 hash，初始顯示主頁導航
         loadData();
     }).catch(error => alert('登入錯誤: ' + error.message));
 }
@@ -222,12 +223,16 @@ auth.onAuthStateChanged(u => {
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('nav').style.display = 'flex';
         document.getElementById('back-to-top').style.display = 'block';
+        location.hash = ''; // 初始顯示主頁導航
         loadData();
+    } else {
+        document.getElementById('login-section').style.display = 'block';
     }
 });
 
 // 導航切換
 window.addEventListener('hashchange', () => {
+    document.getElementById('nav').style.display = 'none'; // 切頁時隱藏主頁導航
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
     if (location.hash === '#draw') document.getElementById('draw').style.display = 'block';
@@ -238,6 +243,14 @@ window.addEventListener('hashchange', () => {
 document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
+
+// 返回主頁
+function backToHome() {
+    location.hash = '';
+    document.getElementById('nav').style.display = 'flex';
+    document.getElementById('draw').style.display = 'none';
+    document.getElementById('archive').style.display = 'none';
+}
 
 // 初始載入
 loadData();
