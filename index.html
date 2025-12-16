@@ -64,8 +64,8 @@
     </div>
     <!-- 一鍵到頂按鈕 -->
     <button id="back-to-top" class="btn btn-custom"><i class="fas fa-arrow-up"></i> 到頂</button>
-    <script src="app.js"></script>
-    <!-- Firebase Config -->
+    
+    <!-- Firebase Config (先初始化 Firebase) -->
     <script>
         const firebaseConfig = {
     apiKey: "AIzaSyA2iBUs4yLgHTpk-woUrUXboug_N-3YL7M",
@@ -81,5 +81,8 @@
         const auth = firebase.auth();
         const db = firebase.firestore();
     </script>
+    
+    <!-- app.js (移到最後，確保 auth 已定義) -->
+    <script src="app.js"></script>
 </body>
 </html>
