@@ -48,8 +48,6 @@ function register() {
     }).catch(error => alert('註冊錯誤: ' + error.message));
 }
 
-// ... (其他函數保持原樣)
-
 // 登出
 function logout() {
     auth.signOut().then(() => {
@@ -60,13 +58,11 @@ function logout() {
         document.getElementById('archive').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'none';
         localStorage.clear(); // 可選：清除本地資料
-        location.hash = '';  // 新增：重設 hash，避免導航殘留
+        location.hash = '';  // 重設 hash，避免導航殘留
         alert('已登出');
-        // window.location.reload();  // 可選：如果仍無反應，取消註解這行強制重載頁面
+        // window.location.reload();  // 可選：如果仍無反應，取消註解
     }).catch(error => alert('登出錯誤: ' + error.message));
 }
-
-// ... (其他部分保持原樣)
 
 // 新增鎖匙扣
 function addKeychain() {

@@ -38,22 +38,40 @@
             <button class="btn btn-secondary w-100 mt-2" onclick="register()">註冊</button>
         </div>
 
-        <!-- 導航 (隱藏直到登入) -->
+        <!-- 主頁導航 (只放大按鈕：抽籤、檔案庫、登出) -->
         <div id="nav" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
-            <ul class="nav nav-pills flex-row" >
+            <ul class="nav nav-pills flex-row">
                 <li class="nav-item m-2">
                     <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#draw">抽籤</a>
                 </li>
                 <li class="nav-item m-2">
                     <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#archive">檔案庫</a>
                 </li>
+                <li class="nav-item m-2">
+                    <button class="nav-link btn-custom btn-lg px-5 py-4 fs-1" onclick="logout()">登出</button>
+                </li>
             </ul>
         </div>
 
         <!-- 抽籤頁 -->
         <div id="draw" class="card p-4" style="display:none;">
+            <!-- 小導航條：抽籤(活躍)、檔案庫、返回主頁、登出 -->
+            <ul class="nav nav-pills flex-row mb-3">
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm active" href="#draw">抽籤</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm" href="#archive">檔案庫</a>
+                </li>
+                <li class="nav-item me-2">
+                    <button class="nav-link btn-secondary btn-sm" onclick="backToHome()">返回主頁</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link btn-danger btn-sm" onclick="logout()">登出</button>
+                </li>
+            </ul>
             <h2>抽籤</h2>
- 	    <p class="text-center text-muted">歡迎使用鎖匙扣抽籤工具！新增您的鎖匙扣並開始抽取吧。</p>
+            <p class="text-center text-muted">歡迎使用鎖匙扣抽籤工具！新增您的鎖匙扣並開始抽取吧。</p>
             <div class="mb-3">
                 <input type="text" id="new-keychain" class="form-control d-inline-block w-50" placeholder="新增鎖匙扣名稱" onkeydown="if(event.key==='Enter') addKeychain()">
                 <button class="btn btn-custom ms-2" onclick="addKeychain()">新增</button>
@@ -66,43 +84,53 @@
             <div id="result" class="mt-3 alert alert-info"></div>
             <h3>鎖匙扣列表</h3>
             <ul id="simple-list" class="list-group mt-3"></ul>
-            <button class="btn btn-secondary mt-3" onclick="backToHome()">返回主頁</button>  <!-- 加在這裡 -->
-            <button class="btn btn-danger mt-3 ms-2" onclick="logout()">登出</button>  <!-- 新增 -->
         </div>
 
         <!-- 檔案庫頁 -->
         <div id="archive" class="card p-4" style="display:none;">
+            <!-- 小導航條：抽籤、檔案庫(活躍)、返回主頁、登出 -->
+            <ul class="nav nav-pills flex-row mb-3">
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm" href="#draw">抽籤</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm active" href="#archive">檔案庫</a>
+                </li>
+                <li class="nav-item me-2">
+                    <button class="nav-link btn-secondary btn-sm" onclick="backToHome()">返回主頁</button>
+                </li>
+                <li class="nav-item">
+                    <button class="nav-link btn-danger btn-sm" onclick="logout()">登出</button>
+                </li>
+            </ul>
             <h2>鎖匙扣檔案庫</h2>
             <p class="text-center text-muted">這裡管理您的所有鎖匙扣，編輯狀態和查看統計。</p>
             <ul id="keychain-list" class="list-group mt-3"></ul>
             <h3>統計與歷史</h3>
             <div id="total-stats" class="mt-3 alert alert-secondary"></div>
             <ul id="stats-list" class="list-group mt-3"></ul>
-            <button class="btn btn-secondary mt-3" onclick="backToHome()">返回主頁</button>
-            <button class="btn btn-danger mt-3 ms-2" onclick="logout()">登出</button>  <!-- 新增 -->
         </div>
     </div>
     <!-- 一鍵到頂按鈕 -->
     <button id="back-to-top" class="btn btn-custom"><i class="fas fa-arrow-up"></i> 到頂</button>
     
-    <!-- Firebase Config (先初始化 Firebase) -->
+    <!-- Firebase Config -->
     <script>
         const firebaseConfig = {
-    apiKey: "AIzaSyA2iBUs4yLgHTpk-woUrUXboug_N-3YL7M",
-    authDomain: "ahl4-key.firebaseapp.com",
-    projectId: "ahl4-key",
-    storageBucket: "ahl4-key.firebasestorage.app",
-    messagingSenderId: "666533647782",
-    appId: "1:666533647782:web:d26cd0dc4b03ac8733ab67",
-    measurementId: "G-VG3HWXTDJ4"
-  };
-
+            apiKey: "AIzaSyA2iBUs4yLgHTpk-woUrUXboug_N-3YL7M",
+            authDomain: "ahl4-key.firebaseapp.com",
+            projectId: "ahl4-key",
+            storageBucket: "ahl4-key.firebasestorage.app",
+            messagingSenderId: "666533647782",
+            appId: "1:666533647782:web:d26cd0dc4b03ac8733ab67",
+            measurementId: "G-VG3HWXTDJ4"
+        };
         firebase.initializeApp(firebaseConfig);
         const auth = firebase.auth();
         const db = firebase.firestore();
     </script>
     
-    <!-- app.js (移到最後，確保 auth 已定義) -->
+    <!-- app.js -->
     <script src="app.js"></script>
 </body>
 </html>
