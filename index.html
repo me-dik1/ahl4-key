@@ -12,6 +12,7 @@
         font-family: 'Noto Sans TC', sans-serif; 
         background: url('https://media.karousell.com/media/photos/products/2020/12/15/________1608049137_0ca655bc_progressive.jpg') no-repeat center center fixed; 
         background-size: cover; /* 讓圖片滿版 */
+        overflow: auto; /* 允許必要滾動，但防過度滾動 bug */
     }
     .card { 
         box-shadow: 0 4px 8px rgba(0,0,0,0.1); 
@@ -21,7 +22,8 @@
     .btn-custom:hover { background-color: #0056b3; }
     #back-to-top { position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; }
     #home .nav-link { border-radius: 20px; } /* 圓角按鈕 */
-    #draw, #archive { min-height: 100vh; } /* 確保頁面滿屏，防止滾動看到多餘內容 */
+    #home, #draw, #archive { min-height: 100vh; padding-top: 20px; } /* 滿屏 + 間距，修滾動 bug */
+    #login-section { min-height: 100vh; } /* 登入頁也滿屏 */
 </style>
     <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
@@ -39,9 +41,23 @@
             <button class="btn btn-secondary w-100 mt-2" onclick="register()">註冊</button>
         </div>
 
-        <!-- 主頁導航 (只放分頁大按鈕及登出大按鈕) -->
-        <div id="home" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
-            <ul class="nav nav-pills flex-row">
+        <!-- 主頁導航 (改為獨立 card + 小導航條 + 大按鈕) -->
+        <div id="home" class="card p-4" style="display:none;">
+            <!-- 最上方小導航條 -->
+            <ul class="nav nav-pills flex-row mb-3">
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm active" href="#home">主頁</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm" href="#draw">抽籤</a>
+                </li>
+                <li class="nav-item me-2">
+                    <a class="nav-link btn-custom btn-sm" href="#archive">檔案庫</a>
+                </li>
+            </ul>
+            <h2 class="text-center">主頁</h2>
+            <p class="text-center text-muted">歡迎回來！選擇您的功能。</p>
+            <ul class="nav nav-pills flex-column align-items-center">
                 <li class="nav-item m-2">
                     <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#draw">抽籤</a>
                 </li>

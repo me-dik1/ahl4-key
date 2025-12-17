@@ -260,7 +260,7 @@ window.addEventListener('hashchange', () => {
     // 根據登入狀態和 hash 顯示
     if (user) {
         if (location.hash === '#home') {
-            document.getElementById('home').style.display = 'flex';
+            document.getElementById('home').style.display = 'block'; // 改 block 以匹配 card
         } else if (location.hash === '#draw') {
             document.getElementById('draw').style.display = 'block';
         } else if (location.hash === '#archive') {
@@ -272,6 +272,7 @@ window.addEventListener('hashchange', () => {
         document.getElementById('login-section').style.display = 'block';
         location.hash = ''; // 未登入時清 hash
     }
+    window.scrollTo(0, 0); // 切換頁面時強制滾到頂部，修滾動 bug
 });
 
 // 一鍵到頂
