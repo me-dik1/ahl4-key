@@ -243,18 +243,19 @@ auth.onAuthStateChanged(u => {
         document.getElementById('home').style.display = 'none';
         document.getElementById('draw').style.display = 'none';
         document.getElementById('archive').style.display = 'none';
+        location.hash = ''; // 確保未登入時 hash 清空
     }
 });
 
 // 導航切換
 window.addEventListener('hashchange', () => {
-    // 先隱藏所有頁面
+    // 先隱藏所有頁面，避免重疊
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('home').style.display = 'none';
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
 
-    // 根據 hash 顯示一個頁面 (如果未登入，hashchange 不會顯示主頁/子頁)
+    // 根據登入狀態和 hash 顯示
     if (user) {
         if (location.hash === '#home' || location.hash === '') {
             document.getElementById('home').style.display = 'flex';
@@ -262,10 +263,12 @@ window.addEventListener('hashchange', () => {
             document.getElementById('draw').style.display = 'block';
         } else if (location.hash === '#archive') {
             document.getElementById('archive').style.display = 'block';
+        } else {
+            location.hash = '#home'; // 未知 hash 跳回主頁
         }
     } else {
         document.getElementById('login-section').style.display = 'block';
-        location.hash = ''; // 強制重設
+        location.hash = ''; // 未登入時清 hash
     }
 });
 
@@ -274,5 +277,5 @@ document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// 初始載入 (初始隱藏所有除登入頁)
+// 初始載入
 loadData();
