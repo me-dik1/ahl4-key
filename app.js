@@ -30,7 +30,7 @@ function login() {
     if (!email || !password) return alert('請輸入 email 和密碼');
     auth.signInWithEmailAndPassword(email, password).then(cred => {
         user = cred.user;
-        hideAllPages();
+        document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
         location.hash = '#home'; // 初始顯示主頁
         loadData();
@@ -51,11 +51,13 @@ function register() {
 function logout() {
     auth.signOut().then(() => {
         user = null;
-        hideAllPages();
         document.getElementById('login-section').style.display = 'block';
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('draw').style.display = 'none';
+        document.getElementById('archive').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'none';
         localStorage.clear(); // 可選：清除本地資料
-        location.hash = '';  // 重設 hash，避免導航殘留
+        location.hash = '';  // 重設 hash，避免未知頁
         alert('已登出');
     }).catch(error => alert('登出錯誤: ' + error.message));
 }
@@ -228,37 +230,42 @@ function renderStats() {
     `;
 }
 
-// 隱藏所有頁面
-function hideAllPages() {
-    document.getElementById('login-section').style.display = 'none';
-    document.getElementById('home').style.display = 'none';
-    document.getElementById('draw').style.display = 'none';
-    document.getElementById('archive').style.display = 'none';
-}
-
 // 初始化
 auth.onAuthStateChanged(u => {
     if (u) {
         user = u;
-        hideAllPages();
+        document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
         location.hash = '#home'; // 初始顯示主頁導航
         loadData();
     } else {
-        hideAllPages();
         document.getElementById('login-section').style.display = 'block';
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('draw').style.display = 'none';
+        document.getElementById('archive').style.display = 'none';
     }
 });
 
 // 導航切換
 window.addEventListener('hashchange', () => {
-    hideAllPages();
-    if (location.hash === '#home' || location.hash === '') {
-        document.getElementById('home').style.display = 'block';
-    } else if (location.hash === '#draw') {
-        document.getElementById('draw').style.display = 'block';
-    } else if (location.hash === '#archive') {
-        document.getElementById('archive').style.display = 'block';
+    // 先隱藏所有頁面
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('home').style.display = 'none';
+    document.getElementById('draw').style.display = 'none';
+    document.getElementById('archive').style.display = 'none';
+
+    // 根據 hash 顯示一個頁面 (如果未登入，hashchange 不會顯示主頁/子頁)
+    if (user) {
+        if (location.hash === '#home' || location.hash === '') {
+            document.getElementById('home').style.display = 'flex';
+        } else if (location.hash === '#draw') {
+            document.getElementById('draw').style.display = 'block';
+        } else if (location.hash === '#archive') {
+            document.getElementById('archive').style.display = 'block';
+        }
+    } else {
+        document.getElementById('login-section').style.display = 'block';
+        location.hash = ''; // 強制重設
     }
 });
 
@@ -267,5 +274,5 @@ document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// 初始載入
+// 初始載入 (初始隱藏所有除登入頁)
 loadData();

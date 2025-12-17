@@ -29,7 +29,7 @@
 </head>
 <body>
     <div class="container mt-5">
-        <!-- 登入區 (無任何分頁或登出按鈕) -->
+        <!-- 登入區 (無任何按鈕或導航) -->
         <div id="login-section" class="card p-4" style="display: block;">
             <h2 class="text-center">登入以同步資料</h2>
             <input type="email" id="email" class="form-control mb-2" placeholder="Email">
@@ -38,8 +38,8 @@
             <button class="btn btn-secondary w-100 mt-2" onclick="register()">註冊</button>
         </div>
 
-        <!-- 主頁導航 (只放分頁大按鈕及登出大按鈕) -->
-        <div id="home"  style="display:none;">
+        <!-- 主頁 (只顯示3大按鈕，無其他內容) -->
+        <div id="home" class="d-flex justify-content-center align-items-center vh-100" style="display:none;">
             <ul class="nav nav-pills flex-row">
                 <li class="nav-item m-2">
                     <a class="nav-link btn-custom btn-lg px-5 py-4 fs-1" href="#draw">抽籤</a>
@@ -53,20 +53,8 @@
             </ul>
         </div>
 
-        <!-- 抽籤頁 -->
+        <!-- 抽籤頁 (無小導航條，只顯示內容) -->
         <div id="draw" class="card p-4" style="display:none;">
-            <!-- 最上方小導航條：分頁小按鈕及返回主頁 (同款 btn-custom btn-sm) -->
-            <ul class="nav nav-pills flex-row mb-3">
-                <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm" href="#home">主頁</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm active" href="#draw">抽籤</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm" href="#archive">檔案庫</a>
-                </li>
-            </ul>
             <h2>抽籤</h2>
             <p class="text-center text-muted">歡迎使用鎖匙扣抽籤工具！新增您的鎖匙扣並開始抽取吧。</p>
             <div class="mb-3">
@@ -83,20 +71,8 @@
             <ul id="simple-list" class="list-group mt-3"></ul>
         </div>
 
-        <!-- 檔案庫頁 -->
+        <!-- 檔案庫頁 (無小導航條，只顯示內容) -->
         <div id="archive" class="card p-4" style="display:none;">
-            <!-- 最上方小導航條：分頁小按鈕及返回主頁 (同款 btn-custom btn-sm) -->
-            <ul class="nav nav-pills flex-row mb-3">
-                <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm" href="#home">主頁</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm" href="#draw">抽籤</a>
-                </li>
-                <li class="nav-item me-2">
-                    <a class="nav-link btn-custom btn-sm active" href="#archive">檔案庫</a>
-                </li>
-            </ul>
             <h2>鎖匙扣檔案庫</h2>
             <p class="text-center text-muted">這裡管理您的所有鎖匙扣，編輯狀態和查看統計。</p>
             <ul id="keychain-list" class="list-group mt-3"></ul>
