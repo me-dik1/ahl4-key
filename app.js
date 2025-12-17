@@ -57,9 +57,8 @@ function logout() {
         document.getElementById('archive').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'none';
         localStorage.clear(); // 可選：清除本地資料
-        location.hash = '';  // 重設 hash，避免導航殘留
+        location.hash = '';  // 重設 hash，避免未知頁
         alert('已登出');
-        // window.location.reload();  // 可選：如果仍無反應，取消註解
     }).catch(error => alert('登出錯誤: ' + error.message));
 }
 
@@ -237,47 +236,41 @@ auth.onAuthStateChanged(u => {
         user = u;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#home'; // 重置為主頁
+        location.hash = '#home'; // 初始顯示主頁導航
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
         document.getElementById('home').style.display = 'none';
         document.getElementById('draw').style.display = 'none';
         document.getElementById('archive').style.display = 'none';
+        location.hash = ''; // 確保未登入時 hash 清空
     }
 });
 
 // 導航切換
-function switchPage(hash) {
-    // 隱藏所有頁面
+window.addEventListener('hashchange', () => {
+    // 先隱藏所有頁面，避免重疊
     document.getElementById('login-section').style.display = 'none';
     document.getElementById('home').style.display = 'none';
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
 
-    // 根據 hash 顯示對應頁面
-    if (hash === '#home' || hash === '') {
-        document.getElementById('home').style.display = 'flex';
-    } else if (hash === '#draw') {
-        document.getElementById('draw').style.display = 'block';
-    } else if (hash === '#archive') {
-        document.getElementById('archive').style.display = 'block';
-    } else if (hash === '#login-section') {
-        document.getElementById('login-section').style.display = 'block';
+    // 根據登入狀態和 hash 顯示
+    if (user) {
+        if (location.hash === '#home' || location.hash === '') {
+            document.getElementById('home').style.display = 'flex';
+        } else if (location.hash === '#draw') {
+            document.getElementById('draw').style.display = 'block';
+        } else if (location.hash === '#archive') {
+            document.getElementById('archive').style.display = 'block';
+        } else {
+            location.hash = '#home'; // 未知 hash 跳回主頁
+        }
     } else {
-        // 未知頁面時重定向至主頁
-        location.hash = '#home';
-        document.getElementById('home').style.display = 'flex';
+        document.getElementById('login-section').style.display = 'block';
+        location.hash = ''; // 未登入時清 hash
     }
-}
-
-// 監聽 hash 改變事件來切換頁面
-window.addEventListener('hashchange', () => {
-    switchPage(location.hash);
 });
-
-// 確保頁面刷新時正確顯示
-switchPage(location.hash || '#home');
 
 // 一鍵到頂
 document.getElementById('back-to-top').onclick = function() {
