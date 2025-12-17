@@ -32,7 +32,7 @@ function login() {
         user = cred.user;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#home'; // 初始顯示主頁
+        location.hash = '#draw'; // 初始顯示抽籤頁，避免停留主頁
         loadData();
     }).catch(error => alert('登入錯誤: ' + error.message));
 }
@@ -57,6 +57,8 @@ function logout() {
         document.getElementById('archive').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'none';
         localStorage.clear(); // 可選：清除本地資料
+        keychains = []; // 清空陣列，避免殘留
+        renderAll(); // 重渲染清空
         location.hash = '';  // 重設 hash，避免未知頁
         alert('已登出');
     }).catch(error => alert('登出錯誤: ' + error.message));
@@ -236,11 +238,11 @@ auth.onAuthStateChanged(u => {
         user = u;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#home'; // 初始顯示主頁導航
+        location.hash = '#draw'; // 初始顯示抽籤頁導航
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
-        document.getElementById('home').style.display = 'none';
+        document.getElementById('home').style.display = 'none'; // 強化隱藏主頁
         document.getElementById('draw').style.display = 'none';
         document.getElementById('archive').style.display = 'none';
         location.hash = ''; // 確保未登入時 hash 清空
@@ -257,14 +259,14 @@ window.addEventListener('hashchange', () => {
 
     // 根據登入狀態和 hash 顯示
     if (user) {
-        if (location.hash === '#home' || location.hash === '') {
+        if (location.hash === '#home') {
             document.getElementById('home').style.display = 'flex';
         } else if (location.hash === '#draw') {
             document.getElementById('draw').style.display = 'block';
         } else if (location.hash === '#archive') {
             document.getElementById('archive').style.display = 'block';
         } else {
-            location.hash = '#home'; // 未知 hash 跳回主頁
+            location.hash = '#draw'; // 未知或空 hash 跳到抽籤頁
         }
     } else {
         document.getElementById('login-section').style.display = 'block';

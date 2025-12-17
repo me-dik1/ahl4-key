@@ -21,6 +21,7 @@
     .btn-custom:hover { background-color: #0056b3; }
     #back-to-top { position: fixed; bottom: 20px; right: 20px; display: none; z-index: 1000; }
     #home .nav-link { border-radius: 20px; } /* 圓角按鈕 */
+    #draw, #archive { min-height: 100vh; } /* 確保頁面滿屏，防止滾動看到多餘內容 */
 </style>
     <!-- Firebase Compat SDK -->
     <script src="https://www.gstatic.com/firebasejs/12.6.0/firebase-app-compat.js"></script>
@@ -53,7 +54,7 @@
             </ul>
         </div>
 
-        <!-- 抽籤頁 (有小導航條) -->
+        <!-- 抽籤頁 (有小導航條，無登出) -->
         <div id="draw" class="card p-4" style="display:none;">
             <!-- 最上方小導航條 -->
             <ul class="nav nav-pills flex-row mb-3">
@@ -65,9 +66,6 @@
                 </li>
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm" href="#archive">檔案庫</a>
-                </li>
-                <li class="nav-item me-2">
-                    <button class="nav-link btn-custom btn-sm" onclick="logout()">登出</button>
                 </li>
             </ul>
             <h2>抽籤</h2>
@@ -86,7 +84,7 @@
             <ul id="simple-list" class="list-group mt-3"></ul>
         </div>
 
-        <!-- 檔案庫頁 (有小導航條) -->
+        <!-- 檔案庫頁 (有小導航條，無登出) -->
         <div id="archive" class="card p-4" style="display:none;">
             <!-- 最上方小導航條 -->
             <ul class="nav nav-pills flex-row mb-3">
@@ -98,9 +96,6 @@
                 </li>
                 <li class="nav-item me-2">
                     <a class="nav-link btn-custom btn-sm active" href="#archive">檔案庫</a>
-                </li>
-                <li class="nav-item me-2">
-                    <button class="nav-link btn-custom btn-sm" onclick="logout()">登出</button>
                 </li>
             </ul>
             <h2>鎖匙扣檔案庫</h2>
