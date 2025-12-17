@@ -237,46 +237,48 @@ auth.onAuthStateChanged(u => {
         user = u;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#home'; // 重置 hash，初始顯示主頁導航
+        location.hash = '#home'; // 重置為主頁
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('draw').style.display = 'none';
+        document.getElementById('archive').style.display = 'none';
     }
 });
 
 // 導航切換
-window.addEventListener('hashchange', () => {
+function switchPage(hash) {
     // 隱藏所有頁面
+    document.getElementById('login-section').style.display = 'none';
     document.getElementById('home').style.display = 'none';
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
-    document.getElementById('login-section').style.display = 'none';
 
     // 根據 hash 顯示對應頁面
-    if (location.hash === '#home' || location.hash === '') {
+    if (hash === '#home' || hash === '') {
         document.getElementById('home').style.display = 'flex';
-    } else if (location.hash === '#draw') {
+    } else if (hash === '#draw') {
         document.getElementById('draw').style.display = 'block';
-    } else if (location.hash === '#archive') {
+    } else if (hash === '#archive') {
         document.getElementById('archive').style.display = 'block';
+    } else if (hash === '#login-section') {
+        document.getElementById('login-section').style.display = 'block';
     } else {
-        // 未知 hash 時重定向回主頁
+        // 未知頁面時重定向至主頁
         location.hash = '#home';
         document.getElementById('home').style.display = 'flex';
     }
+}
+
+// 監聽 hash 改變事件來切換頁面
+window.addEventListener('hashchange', () => {
+    switchPage(location.hash);
 });
 
-// 確保頁面重整時正確顯示
-if (location.hash === '#home' || location.hash === '') {
-    document.getElementById('home').style.display = 'flex';
-} else if (location.hash === '#draw') {
-    document.getElementById('draw').style.display = 'block';
-} else if (location.hash === '#archive') {
-    document.getElementById('archive').style.display = 'block';
-} else {
-    location.hash = '#home';
-    document.getElementById('home').style.display = 'flex';
-}
+// 確保頁面刷新時正確顯示
+switchPage(location.hash || '#home');
+
 // 一鍵到頂
 document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
