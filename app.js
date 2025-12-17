@@ -59,7 +59,6 @@ function logout() {
         localStorage.clear(); // 可選：清除本地資料
         location.hash = '';  // 重設 hash，避免導航殘留
         alert('已登出');
-        // window.location.reload();  // 可選：如果仍無反應，取消註解
     }).catch(error => alert('登出錯誤: ' + error.message));
 }
 
@@ -237,23 +236,32 @@ auth.onAuthStateChanged(u => {
         user = u;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#home'; // 重置 hash，初始顯示主頁導航
+        location.hash = '#home'; // 初始顯示主頁導航
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
+        document.getElementById('home').style.display = 'none';
+        document.getElementById('draw').style.display = 'none';
+        document.getElementById('archive').style.display = 'none';
     }
 });
 
 // 導航切換
 window.addEventListener('hashchange', () => {
-    document.getElementById('home').style.display = 'none'; // 切頁時隱藏主頁導航
+    // 先隱藏所有頁面，確保不重疊
+    document.getElementById('login-section').style.display = 'none';
+    document.getElementById('home').style.display = 'none';
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
+
+    // 根據 hash 顯示一個頁面
     if (location.hash === '#home' || location.hash === '') {
         document.getElementById('home').style.display = 'flex';
+    } else if (location.hash === '#draw') {
+        document.getElementById('draw').style.display = 'block';
+    } else if (location.hash === '#archive') {
+        document.getElementById('archive').style.display = 'block';
     }
-    if (location.hash === '#draw') document.getElementById('draw').style.display = 'block';
-    if (location.hash === '#archive') document.getElementById('archive').style.display = 'block';
 });
 
 // 一鍵到頂
@@ -261,5 +269,5 @@ document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
 };
 
-// 初始載入
+// 初始載入 (初始隱藏所有除登入頁)
 loadData();
