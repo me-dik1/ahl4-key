@@ -151,6 +151,15 @@ function resetStatus(id) {
     renderArchive();
 }
 
+// 新增: 重置所有狀態
+function resetAllStatus() {
+    if (confirm('確認重置所有鎖匙扣狀態為「未用」？')) {
+        keychains.forEach(kc => kc.status = '未用');
+        saveData();
+        renderAll();
+    }
+}
+
 // 隨機排序
 function shuffleOrder() {
     keychains = keychains.sort(() => Math.random() - 0.5);
