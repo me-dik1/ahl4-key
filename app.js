@@ -246,16 +246,37 @@ auth.onAuthStateChanged(u => {
 
 // 導航切換
 window.addEventListener('hashchange', () => {
-    document.getElementById('home').style.display = 'none'; // 切頁時隱藏主頁導航
+    // 隱藏所有頁面
+    document.getElementById('home').style.display = 'none';
     document.getElementById('draw').style.display = 'none';
     document.getElementById('archive').style.display = 'none';
+    document.getElementById('login-section').style.display = 'none';
+
+    // 根據 hash 顯示對應頁面
     if (location.hash === '#home' || location.hash === '') {
         document.getElementById('home').style.display = 'flex';
+    } else if (location.hash === '#draw') {
+        document.getElementById('draw').style.display = 'block';
+    } else if (location.hash === '#archive') {
+        document.getElementById('archive').style.display = 'block';
+    } else {
+        // 未知 hash 時重定向回主頁
+        location.hash = '#home';
+        document.getElementById('home').style.display = 'flex';
     }
-    if (location.hash === '#draw') document.getElementById('draw').style.display = 'block';
-    if (location.hash === '#archive') document.getElementById('archive').style.display = 'block';
 });
 
+// 確保頁面重整時正確顯示
+if (location.hash === '#home' || location.hash === '') {
+    document.getElementById('home').style.display = 'flex';
+} else if (location.hash === '#draw') {
+    document.getElementById('draw').style.display = 'block';
+} else if (location.hash === '#archive') {
+    document.getElementById('archive').style.display = 'block';
+} else {
+    location.hash = '#home';
+    document.getElementById('home').style.display = 'flex';
+}
 // 一鍵到頂
 document.getElementById('back-to-top').onclick = function() {
     window.scrollTo({ top: 0, behavior: 'smooth' });
