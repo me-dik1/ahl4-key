@@ -32,7 +32,7 @@ function login() {
         user = cred.user;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#draw'; // 初始顯示抽籤頁，避免停留主頁
+        location.hash = '#home'; // 初始顯示抽籤頁，避免停留主頁
         loadData();
     }).catch(error => alert('登入錯誤: ' + error.message));
 }
