@@ -254,7 +254,7 @@ auth.onAuthStateChanged(u => {
 window.addEventListener('hashchange', () => {
     hideAllPages();
     if (location.hash === '#home' || location.hash === '') {
-        document.getElementById('home').style.display = 'flex';
+        document.getElementById('home').style.display = 'block';
     } else if (location.hash === '#draw') {
         document.getElementById('draw').style.display = 'block';
     } else if (location.hash === '#archive') {
