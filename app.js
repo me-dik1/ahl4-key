@@ -1,20 +1,53 @@
 let keychains = []; // 鎖匙扣陣列
 let user = null;
 
-// 載入資料
+const CLOUDINARY_CLOUD_NAME = 'djecklwhf'; // 修改這裡：替換成您的Cloud Name，例如 'demo'
+const CLOUDINARY_UPLOAD_PRESET = 'ahl4-key'; // 修改這裡：替換成您的unsigned upload preset名稱，例如 'keychain_unsigned'
+
+
+// 上傳圖片到Cloudinary的函數（新增）
+async function uploadToCloudinary(file) {
+    if (!file) return ''; // 無檔案，返回空
+    const formData = new FormData();
+    formData.append('file', file);
+    formData.append('upload_preset', CLOUDINARY_UPLOAD_PRESET); // 使用無簽名預設
+    try {
+        const response = await fetch(`https://api.cloudinary.com/v1_1/${CLOUDINARY_CLOUD_NAME}/image/upload`, {
+            method: 'POST',
+            body: formData
+        });
+        const data = await response.json();
+        if (data.secure_url) {
+            return data.secure_url; // 返回安全的HTTPS URL
+        } else {
+            alert('上傳失敗: ' + data.error.message);
+            return '';
+        }
+    } catch (error) {
+        alert('上傳錯誤: ' + error.message);
+        return '';
+    }
+}
+
+// 載入資料（修改：確保imageUrl存在）
 function loadData() {
     if (user) {
         db.collection('keychains').doc(user.uid).get().then(doc => {
-            if (doc.exists) keychains = doc.data().list || [];
+            if (doc.exists) {
+                keychains = doc.data().list || [];
+                // 確保每個keychain有imageUrl（舊資料兼容）
+                keychains.forEach(kc => { if (!kc.imageUrl) kc.imageUrl = ''; });
+            }
             renderAll();
         }).catch(error => console.error('載入錯誤:', error));
     } else {
         keychains = JSON.parse(localStorage.getItem('keychains')) || [];
+        keychains.forEach(kc => { if (!kc.imageUrl) kc.imageUrl = ''; });
         renderAll();
     }
 }
 
-// 保存資料
+// 保存資料（無變更，但會自動保存imageUrl）
 function saveData() {
     if (user) {
         db.collection('keychains').doc(user.uid).set({ list: keychains }).catch(error => console.error('保存錯誤:', error));
@@ -22,6 +55,7 @@ function saveData() {
         localStorage.setItem('keychains', JSON.stringify(keychains));
     }
 }
+
 
 // 登入
 function login() {
@@ -64,14 +98,20 @@ function logout() {
     }).catch(error => alert('登出錯誤: ' + error.message));
 }
 
-// 新增鎖匙扣
-function addKeychain() {
+// 新增鎖匙扣（修改：處理圖片上傳）
+async function addKeychain() {
     const name = document.getElementById('new-keychain').value.trim();
+    const file = document.getElementById('new-keychain-image').files[0];
     if (name) {
-        keychains.push({ id: Date.now(), name, drawnCount: 0, usedCount: 0, status: '未用' });
+        let imageUrl = '';
+        if (file) {
+            imageUrl = await uploadToCloudinary(file); // 上傳並獲取URL
+        }
+        keychains.push({ id: Date.now(), name, drawnCount: 0, usedCount: 0, status: '未用', imageUrl });
         saveData();
         renderAll();
         document.getElementById('new-keychain').value = '';
+        document.getElementById('new-keychain-image').value = ''; // 清空file input
     }
 }
 
@@ -82,36 +122,58 @@ function renderAll() {
     renderStats();
 }
 
-// 渲染抽籤頁簡單列表
+// 渲染抽籤頁簡單列表（修改：顯示圖片）
 function renderSimpleList() {
     const list = document.getElementById('simple-list');
     list.innerHTML = '';
     keychains.forEach((kc, index) => {
         const li = document.createElement('li');
-        li.className = 'list-group-item';
+        li.className = 'list-group-item d-flex align-items-center';
         li.innerHTML = `${index + 1}. ${kc.name}`;
+        if (kc.imageUrl) {
+            li.innerHTML += `<img src="${kc.imageUrl}" alt="${kc.name}" class="keychain-img">`;
+        }
         list.appendChild(li);
     });
 }
 
-// 渲染檔案庫列表
+// 渲染檔案庫列表（修改：顯示圖片，並添加編輯圖片功能）
 function renderArchive() {
     const list = document.getElementById('keychain-list');
     list.innerHTML = '';
     keychains.forEach((kc, index) => {
         const li = document.createElement('li');
         li.className = 'list-group-item d-flex justify-content-between align-items-center';
+        let content = `${index + 1}. ${kc.name} - 狀態: ${kc.status}`;
+        if (kc.imageUrl) {
+            content += `<img src="${kc.imageUrl}" alt="${kc.name}" class="keychain-img">`;
+        }
         li.innerHTML = `
-            <span>${index + 1}. ${kc.name} - 狀態: ${kc.status}</span>
+            <span>${content}</span>
             <div>
                 <button class="btn btn-sm btn-primary" onclick="editKeychain(${kc.id})"><i class="fas fa-edit"></i></button>
                 <button class="btn btn-sm btn-success" onclick="setStatus(${kc.id}, '使用中')"><i class="fas fa-play"></i> 使用中</button>
                 <button class="btn btn-sm btn-secondary" onclick="setStatus(${kc.id}, '用完')"><i class="fas fa-stop"></i> 用完</button>
                 <button class="btn btn-sm btn-info" onclick="resetStatus(${kc.id})"><i class="fas fa-undo"></i> 重置狀態</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteKeychain(${kc.id})"><i class="fas fa-trash"></i></button>
+                <input type="file" id="edit-image-${kc.id}" class="form-control d-inline-block w-auto ms-2" accept="image/*" style="display:none;"> <!-- 隱藏file input -->
+                <button class="btn btn-sm btn-warning ms-2" onclick="document.getElementById('edit-image-${kc.id}').click()"><i class="fas fa-upload"></i> 上傳圖片</button>
             </div>
         `;
         list.appendChild(li);
+
+        // 監聽file change事件，上傳圖片（新增）
+        document.getElementById(`edit-image-${kc.id}`).addEventListener('change', async (e) => {
+            const file = e.target.files[0];
+            if (file) {
+                const newUrl = await uploadToCloudinary(file);
+                if (newUrl) {
+                    kc.imageUrl = newUrl;
+                    saveData();
+                    renderAll();
+                }
+            }
+        });
     });
 }
 
