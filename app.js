@@ -337,7 +337,7 @@ window.addEventListener('hashchange', () => {
         } else if (location.hash === '#archive') {
             document.getElementById('archive').style.display = 'block';
         } else {
-            location.hash = '#draw'; // 未知或空 hash 跳到抽籤頁
+            location.hash = '#home'; // 未知或空 hash 跳到抽籤頁
         }
     } else {
         document.getElementById('login-section').style.display = 'block';
@@ -352,4 +352,5 @@ document.getElementById('back-to-top').onclick = function() {
 };
 
 // 初始載入
+
 loadData();
