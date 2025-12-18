@@ -309,7 +309,7 @@ auth.onAuthStateChanged(u => {
         user = u;
         document.getElementById('login-section').style.display = 'none';
         document.getElementById('back-to-top').style.display = 'block';
-        location.hash = '#draw'; // 初始顯示抽籤頁導航
+        location.hash = '#home'; // 初始顯示抽籤頁導航
         loadData();
     } else {
         document.getElementById('login-section').style.display = 'block';
