@@ -79,6 +79,7 @@
             <p class="text-center text-muted">歡迎使用鎖匙扣抽籤工具！新增您的鎖匙扣並開始抽取吧。</p>
             <div class="mb-3">
                 <input type="text" id="new-keychain" class="form-control d-inline-block w-50" placeholder="新增鎖匙扣名稱" onkeydown="if(event.key==='Enter') addKeychain()">
+                <input type="file" id="new-keychain-image" class="form-control d-inline-block w-auto ms-2" accept="image/*"> <!-- 新增：圖片上傳輸入 -->
                 <button class="btn btn-custom ms-2" onclick="addKeychain()">新增</button>
                 <button class="btn btn-custom ms-2" onclick="shuffleOrder()">隨機排序</button>
             </div>

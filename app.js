@@ -101,7 +101,8 @@ function logout() {
 // 新增鎖匙扣（修改：處理圖片上傳）
 async function addKeychain() {
     const name = document.getElementById('new-keychain').value.trim();
-    const file = document.getElementById('new-keychain-image').files[0];
+    const fileInput = document.getElementById('new-keychain-image');
+    const file = fileInput ? fileInput.files[0] : null; // 防錯：如果元素不存在，返回 null
     if (name) {
         let imageUrl = '';
         if (file) {
@@ -111,7 +112,7 @@ async function addKeychain() {
         saveData();
         renderAll();
         document.getElementById('new-keychain').value = '';
-        document.getElementById('new-keychain-image').value = ''; // 清空file input
+        if (fileInput) fileInput.value = ''; // 清空file input
     }
 }
 
@@ -137,7 +138,7 @@ function renderSimpleList() {
     });
 }
 
-// 渲染檔案庫列表（修改：顯示圖片，並添加編輯圖片功能）
+// 渲染檔案庫列表（修改：只留一個上傳按鈕，使用可見 file input）
 function renderArchive() {
     const list = document.getElementById('keychain-list');
     list.innerHTML = '';
@@ -156,13 +157,12 @@ function renderArchive() {
                 <button class="btn btn-sm btn-secondary" onclick="setStatus(${kc.id}, '用完')"><i class="fas fa-stop"></i> 用完</button>
                 <button class="btn btn-sm btn-info" onclick="resetStatus(${kc.id})"><i class="fas fa-undo"></i> 重置狀態</button>
                 <button class="btn btn-sm btn-danger" onclick="deleteKeychain(${kc.id})"><i class="fas fa-trash"></i></button>
-                <input type="file" id="edit-image-${kc.id}" class="form-control d-inline-block w-auto ms-2" accept="image/*" style="display:none;"> <!-- 隱藏file input -->
-                <button class="btn btn-sm btn-warning ms-2" onclick="document.getElementById('edit-image-${kc.id}').click()"><i class="fas fa-upload"></i> 上傳圖片</button>
+                <input type="file" id="edit-image-${kc.id}" class="form-control d-inline-block w-auto ms-2" accept="image/*"> <!-- 直接顯示 file input 作為唯一按鈕 -->
             </div>
         `;
         list.appendChild(li);
 
-        // 監聽file change事件，上傳圖片（新增）
+        // 監聽file change事件，上傳圖片（無需隱藏和額外按鈕）
         document.getElementById(`edit-image-${kc.id}`).addEventListener('change', async (e) => {
             const file = e.target.files[0];
             if (file) {
